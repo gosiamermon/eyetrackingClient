@@ -1,0 +1,26 @@
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group__label {
+  font-weight: bold;
+}
+
+.save-button {
+  height: 45px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 20px;
+  align-self: flex-end;
+  width: 120px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}

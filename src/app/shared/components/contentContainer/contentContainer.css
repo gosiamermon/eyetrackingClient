@@ -1,0 +1,13 @@
+.content-container {
+  height: 100%;
+  min-height: calc(100vh - 60px);
+  background-color: #d0d9dc;
+  justify-content: center;
+  display: flex;
+}
+
+.content {
+  max-width: 1200px;
+  width: 100%;
+  padding: 40px 0;
+}
