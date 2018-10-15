@@ -1,0 +1,9 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.table__link {
+  align-self: flex-end;
+  margin-bottom: 30px;
+}

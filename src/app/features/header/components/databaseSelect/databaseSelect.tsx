@@ -2,12 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Input, Label } from 'reactstrap';
 import { setDatabase } from '../../state/actions';
+import { getExperiments } from '../../../table/state/actions';
 import { databases } from '../../../../../config/databases';
 import './databaseSelect.css';
 
 interface Props {
   database: string;
   setDatabase: (database: string) => void;
+  getExperiments: () => void;
 }
 
 interface State {
@@ -34,10 +36,12 @@ class DatabaseSelect extends React.Component<Props, State> {
 
   private onSelect = (e: any) => {
     this.props.setDatabase(e.target.value);
+    this.props.getExperiments();
   }
 }
 
 const mapDispatchToProps = {
+  getExperiments,
   setDatabase,
 }
 

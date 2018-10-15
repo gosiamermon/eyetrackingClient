@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import * as Papa from 'papaparse';
-import { SessionData, Calibration, Measurement, Stymulus, Experiment } from '../../shared/interfaces';
+import { SessionData, Calibration, Measurement, Stymulus, Experiment } from '../../shared/model';
 import { measurementFileTypes, stymulusFileTypes } from '../../../config/fileTypes';
-import { addExperiment } from './state/actions';
+import { addExperiment } from './state/actions/';
 import './experimentForm.css';
 
 interface Props {
@@ -16,8 +17,14 @@ interface State {
   startDate: string;
   endDate: string;
   sessionData: SessionData[];
-  calibration: Calibration[][];
-  measurements: Measurement[][];
+  calibrationData: Array<{
+    sessionId: string;
+    measurements: Calibration[];
+  }>,
+  measurementsData: Array<{
+    sessionId: string;
+    measurements: Measurement[];
+  }>,
   stymulus: Stymulus[];
   saveDisabled: boolean;
 }
@@ -27,9 +34,9 @@ class ExperimentForm extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      calibration: [],
+      calibrationData: [],
       endDate: "",
-      measurements: [],
+      measurementsData: [],
       name: "",
       saveDisabled: true,
       sessionData: [],
@@ -41,6 +48,7 @@ class ExperimentForm extends React.Component<Props, State> {
   public render() {
     return (
       <div className="form-container">
+        <Link className="form__link" to="/table">Powrót</Link>
         <Form className="form">
           <FormGroup className="form-group">
             <Label className="form-group__label" for="experimentName">Experiment name</Label>
@@ -82,7 +90,7 @@ class ExperimentForm extends React.Component<Props, State> {
           <FormGroup className="form-group">
             <Label className="form-group__label" for="calibration">Calibration measurements</Label>
             <Input
-              onChange={this.onMeasurementsChange.bind(this, "calibration")}
+              onChange={this.onMeasurementsChange.bind(this, "calibrationData")}
               type="file"
               accept=".csv,.txt"
               multiple={true}
@@ -93,7 +101,7 @@ class ExperimentForm extends React.Component<Props, State> {
           <FormGroup className="form-group">
             <Label className="form-group__label" for="measurements">Measurements</Label>
             <Input
-              onChange={this.onMeasurementsChange.bind(this, "measurements")}
+              onChange={this.onMeasurementsChange.bind(this, "measurementsData")}
               type="file"
               accept=".csv,.txt"
               multiple={true}
@@ -113,14 +121,15 @@ class ExperimentForm extends React.Component<Props, State> {
       startDate,
       endDate,
       sessionData,
-      calibration,
-      measurements,
+      calibrationData,
+      measurementsData,
       stymulus
     } = this.state;
+
     this.props.addExperiment({
-      calibration,
+      calibrationData,
       endDate,
-      measurements,
+      measurementsData,
       name,
       sessionData,
       startDate,
@@ -132,14 +141,14 @@ class ExperimentForm extends React.Component<Props, State> {
     const {
       startDate,
       endDate,
-      measurements,
-      calibration,
+      measurementsData,
+      calibrationData,
       sessionData,
       stymulus,
       name
     } = this.state;
-    if (startDate.length && endDate.length && measurements &&
-      calibration && sessionData && stymulus && name) {
+    if (startDate.length && endDate.length && measurementsData &&
+      calibrationData && sessionData && stymulus && name) {
       return true;
     }
     return false;
@@ -156,12 +165,17 @@ class ExperimentForm extends React.Component<Props, State> {
     }
   };
 
-  private onMeasurementsLoad = (fieldName: string, e: any) => {
+  private onMeasurementsLoad = (fieldName: string, fileName: string, e: any) => {
     const text = e.target.result;
     const measurements: Calibration[] | Measurement[] = Papa.parse(text, { header: true }).data;
 
+    const sessionIdData = /(?<=[\$])([0-9]*)(?=\.)/.exec(fileName)
+    const measurementsData = {
+      measurements,
+      sessionId: sessionIdData ? sessionIdData[0] : fileName,
+    }
     const newState = {};
-    newState[fieldName] = [...this.state[fieldName], measurements];
+    newState[fieldName] = [...this.state[fieldName], measurementsData];
     this.setState(newState);
     if (this.checkAllRequiredFields()) {
       this.setState({
@@ -255,7 +269,7 @@ class ExperimentForm extends React.Component<Props, State> {
       if (measurementFileTypes.some(type => type === file.type)) {
         const reader = new FileReader();
 
-        reader.onload = this.onMeasurementsLoad.bind(this, fieldName);
+        reader.onload = this.onMeasurementsLoad.bind(this, fieldName, file.name);
         reader.readAsText(file);
       } else {
         this.stopLoadingFiles(e, fieldName);
