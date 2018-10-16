@@ -1,0 +1,1 @@
+export const SET_QUERY_RESPONSE = 'SET_QUERY_RESPONSE';

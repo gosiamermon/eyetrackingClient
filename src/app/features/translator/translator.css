@@ -1,0 +1,18 @@
+.translator-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.form-element {
+  max-width: 230px;
+  margin: 20px;
+}
+.translator-button{
+  text-align: right;
+  margin: 20px;
+}
+
+.where-clause {
+  display: flex;
+}

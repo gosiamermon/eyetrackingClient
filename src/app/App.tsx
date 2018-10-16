@@ -6,6 +6,7 @@ import ContentContainer from './shared/components/contentContainer/contentContai
 import ExperimentForm from './features/experimentForm/experimentForm';
 import Table from './features/table/table';
 import Details from './features/details/details';
+import Translator from './features/translator/translator';
 import 'react-table/react-table.css';
 
 class App extends React.Component {
@@ -15,9 +16,11 @@ class App extends React.Component {
         <Header />
         <ContentContainer>
           <Switch>
+            <Route path="/translator" component={Translator} />
             <Route path="/form" component={ExperimentForm} />
             <Route path="/table" component={Table} />
             <Route path="/details" component={Details} />
+
             <Redirect from={'/'} to={"/table"} />
           </Switch>
         </ContentContainer>
