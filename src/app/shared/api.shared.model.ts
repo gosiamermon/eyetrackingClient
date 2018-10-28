@@ -1,3 +1,4 @@
+import { DataPerStymulus } from './model';
 
 
 export interface ApiExperiment {
@@ -5,6 +6,8 @@ export interface ApiExperiment {
   startDate: string;
   endDate: string;
   stymulus?: ApiStymulus[];
+  sessions?: ApiSession[];
+  subjects?: ApiSubject[];
 }
 
 
@@ -50,12 +53,17 @@ export interface ApiResponseCassandraStymulus {
 export interface ApiSession {
   startDate: string;
   endDate: string;
-  experimentId: number | string;
+  experimentId?: number | string;
   subjectId?: number | string;
+  subjectName?: string;
   deviceType: string;
   deviceError: number;
   deviceProducer: string;
   deviceFrequency: number;
+  calibrationPerStymulus?: DataPerStymulus[];
+  measurementsPerStymulus?: DataPerStymulus[];
+  measurements?: ApiMeasurement[];
+  calibration?: ApiMeasurement[];
 }
 
 export interface ApiResponseSession extends ApiSession {
@@ -89,6 +97,7 @@ export interface ApiSubject {
   sex: string;
   educationLevel: string;
   visionDefect: number;
+  name?: string;
 }
 
 export interface ApiResponseSubject extends ApiSubject {
@@ -107,7 +116,7 @@ export interface ApiMeasurement {
   timestamp: number;
   x: number;
   y: number;
-  sessionId: number | string;
+  sessionId?: number | string;
   stymulusId: number;
   isCalibration: number;
 }

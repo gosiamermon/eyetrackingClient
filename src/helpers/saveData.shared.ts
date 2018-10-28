@@ -48,6 +48,23 @@ export async function saveExperiment(
   return await experimentResponse.json();
 };
 
+export async function saveAllExperiment(url: string, experiment: ApiExperiment) {
+  try {
+    await fetch(`${url}experiments`, {
+      body: JSON.stringify(experiment),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      method: "POST",
+      mode: "cors",
+    })
+  } catch (e) {
+    alert("Couldn't save experiment!"); // dispatch failure
+    return;
+  }
+  return;
+};
+
 export async function saveSubject(url: string, session: SessionData) {
   const apiSubject: ApiSubject = prepareSubject(session);
   let subjectResponse;

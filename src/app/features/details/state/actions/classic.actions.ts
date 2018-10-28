@@ -99,7 +99,6 @@ export const getExperimentFromMongoClassic = (
   return async (dispatch: any, getState: () => Store) => {
     const experiment: ApiResponseExperiment = await getExperiment(id, mongoClassicUrl);
     const sessions: ApiResponseSession[] = await getSessions(experiment.id, mongoClassicUrl);
-    console.log(sessions)
     for (const session of sessions) {
       const measurements: ApiResponseMeasurement[] = await getMeasurements(session.id, mongoClassicUrl);
       session.measurements = measurements.filter(m => !m.isCalibration);

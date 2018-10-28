@@ -20,6 +20,7 @@
   border-radius: 20px;
   align-self: flex-end;
   width: 120px;
+  cursor: pointer;
 }
 
 .form {
@@ -30,4 +31,15 @@
 .form__link {
   align-self: flex-start;
   margin-bottom: 50px;
+}
+
+.multiple-save-button {
+  width: 300px;
+  margin-left: 20px;
+  height: 45px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 20px;
+  align-self: flex-end;
+  cursor: pointer;
 }

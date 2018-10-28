@@ -1,12 +1,13 @@
-import { ApiExperiment, ApiMongoExperiment } from '../app/shared/api.experimentBased.model';
+import { ApiSubject } from '../app/shared/api.subjectBased.model';
+
 
 export async function saveExperiment(
   url: string,
-  apiExperiment: ApiExperiment | ApiMongoExperiment,
+  subjects: ApiSubject[],
 ) {
   try {
-    await fetch(`${url}experiments`, {
-      body: JSON.stringify(apiExperiment),
+    await fetch(`${url}subjects`, {
+      body: JSON.stringify(subjects),
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
@@ -17,4 +18,5 @@ export async function saveExperiment(
     alert("Couldn't save experiment!"); // dispatch failure
     return;
   }
+  return;
 };

@@ -21,6 +21,14 @@ import {
   getExperimentFromMongoSessionBased,
   getExperimentFromCassandraSessionBased,
 } from './sessionBased.actions';
+import { get10Times } from '../../../../../helpers/getData.shared';
+
+
+export const get10TimesFromAllDatabases = () => {
+  return async (dispatch: any, getState: () => Store) => {
+    await get10Times();
+  }
+}
 
 export const getExperiment = (id: string | number) => {
   return async (dispatch: any, getState: () => Store) => {

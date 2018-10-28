@@ -6,3 +6,5 @@ export const cassandraExperimentBasedUrl = `${baseUrl}experiment/Cassandra/`;
 export const mongoExperimentBasedUrl = `${baseUrl}experiment/Mongo/`;
 export const cassandraSessionBasedUrl = `${baseUrl}session/Cassandra/`;
 export const mongoSessionBasedUrl = `${baseUrl}session/Mongo/`;
+export const cassandraSubjectBasedUrl = `${baseUrl}subject/Cassandra/`;
+export const mongoSubjectBasedUrl = `${baseUrl}subject/Mongo/`;

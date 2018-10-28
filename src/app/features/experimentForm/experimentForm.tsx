@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import * as Papa from 'papaparse';
 import { SessionData, Calibration, Measurement, Stymulus, Experiment } from '../../shared/model';
 import { measurementFileTypes, stymulusFileTypes } from '../../../config/fileTypes';
-import { addExperiment } from './state/actions/';
+import { addExperiment, saveExperiment10Times } from './state/actions/';
 import './experimentForm.css';
 
 interface Props {
   addExperiment: (experiment: Experiment) => void;
+  saveExperiment10Times: (experiment: Experiment) => void;
 }
 
 interface State {
@@ -19,10 +20,12 @@ interface State {
   sessionData: SessionData[];
   calibrationData: Array<{
     sessionId: string;
+    subjectName: string;
     measurements: Calibration[];
   }>,
   measurementsData: Array<{
     sessionId: string;
+    subjectName: string;
     measurements: Measurement[];
   }>,
   stymulus: Stymulus[];
@@ -109,7 +112,10 @@ class ExperimentForm extends React.Component<Props, State> {
               id="measurements"
             />
           </FormGroup>
-          <Button onClick={this.saveExperiment} className="save-button" disabled={this.state.saveDisabled}>Zapisz</Button>
+          <div>
+            <Button onClick={this.saveExperiment} className="save-button" disabled={this.state.saveDisabled}>Zapisz</Button>
+            <Button onClick={this.saveExperiment10Times} className="multiple-save-button" disabled={this.state.saveDisabled}>Zapisz 10 razy do wszystkich baz</Button>
+          </div>
         </Form>
       </div>
     );
@@ -127,6 +133,28 @@ class ExperimentForm extends React.Component<Props, State> {
     } = this.state;
 
     this.props.addExperiment({
+      calibrationData,
+      endDate,
+      measurementsData,
+      name,
+      sessionData,
+      startDate,
+      stymulus
+    });
+  }
+
+  private saveExperiment10Times = () => {
+    const {
+      name,
+      startDate,
+      endDate,
+      sessionData,
+      calibrationData,
+      measurementsData,
+      stymulus
+    } = this.state;
+
+    this.props.saveExperiment10Times({
       calibrationData,
       endDate,
       measurementsData,
@@ -169,10 +197,12 @@ class ExperimentForm extends React.Component<Props, State> {
     const text = e.target.result;
     const measurements: Calibration[] | Measurement[] = Papa.parse(text, { header: true }).data;
 
-    const sessionIdData = /(?<=[\$])([0-9]*)(?=\.)/.exec(fileName)
+    const sessionIdData = /(?<=[\$])([0-9]*)(?=\.)/.exec(fileName);
+    const subjectName = /(?<=[\$])([a-z]*)(?=[\$])/.exec(fileName);
     const measurementsData = {
       measurements,
       sessionId: sessionIdData ? sessionIdData[0] : fileName,
+      subjectName: subjectName ? subjectName[0] : fileName,
     }
     const newState = {};
     newState[fieldName] = [...this.state[fieldName], measurementsData];
@@ -282,6 +312,7 @@ class ExperimentForm extends React.Component<Props, State> {
 
 const mapDispatchToProps = {
   addExperiment,
+  saveExperiment10Times,
 }
 
 export default connect(null, mapDispatchToProps)(ExperimentForm);

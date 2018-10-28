@@ -2,6 +2,7 @@ import { Experiment, MeasurementsSet, SessionData } from '../app/shared/model';
 import { ApiExperiment, ApiSession, ApiSubject } from '../app/shared/api.shared.model';
 import { CPE, CPS, G } from '../config/constants';
 import { ApiStymulus } from '../app/shared/api.shared.model';
+import { ApiMongoSubject } from '../app/shared/api.experimentBased.model';
 
 export const prepareStymulusForCalibration = (
   experiment: Experiment,
@@ -141,26 +142,67 @@ export const prepareSubject = (session: SessionData): ApiSubject => {
   return {
     age: Number(session.age),
     educationLevel: session.educationLevel,
+    name: session.subjectName,
     sex: session.sex,
     visionDefect: Number(session.visionDefect),
   };
 };
 
+export const prepareMongoSubjects = (sessions: SessionData[]): ApiMongoSubject[] => {
+  const uniqueSubjectsData = sessions.filter((session, index, arr) => {
+    return arr.map(mapSession => mapSession.subjectName).indexOf(session.subjectName) === index;
+  });
+
+  return uniqueSubjectsData.map(session => prepareMongoSubject(session));
+}
+
+export const prepareMongoSubject = (session: SessionData): ApiMongoSubject => {
+  return {
+    age: Number(session.age),
+    educationLevel: session.educationLevel,
+    name: session.subjectName,
+    sessions: [],
+    sex: session.sex,
+    visionDefect: Number(session.visionDefect),
+  };
+};
+
+export const prepareSubjects = (sessions: SessionData[]): ApiSubject[] => {
+  const uniqueSubjectsData = sessions.filter((session, index, arr) => {
+    return arr.map(mapSession => mapSession.subjectName).indexOf(session.subjectName) === index;
+  });
+
+  return uniqueSubjectsData.map(session => prepareSubject(session));
+}
+
 export const prepareSession = (
   session: SessionData,
-  experimentId: number,
-  subjectId: number,
+  experimentId?: number,
+  subjectId?: number,
 ): ApiSession => {
-  return {
-    deviceError: Number(session.deviceError),
-    deviceFrequency: Number(session.deviceFrequency),
-    deviceProducer: session.deviceProducer,
-    deviceType: session.deviceType,
-    endDate: session.endDate,
-    experimentId,
-    startDate: session.startDate,
-    subjectId,
-  };
+  if (experimentId && subjectId) {
+    return {
+      deviceError: Number(session.deviceError),
+      deviceFrequency: Number(session.deviceFrequency),
+      deviceProducer: session.deviceProducer,
+      deviceType: session.deviceType,
+      endDate: session.endDate,
+      experimentId,
+      startDate: session.startDate,
+      subjectId,
+      subjectName: session.subjectName,
+    };
+  } else {
+    return {
+      deviceError: Number(session.deviceError),
+      deviceFrequency: Number(session.deviceFrequency),
+      deviceProducer: session.deviceProducer,
+      deviceType: session.deviceType,
+      endDate: session.endDate,
+      startDate: session.startDate,
+      subjectName: session.subjectName,
+    }
+  }
 };
 
 export function calculateTime(firstCPSTimestamp: number, timestamp: string) {

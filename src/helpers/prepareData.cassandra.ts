@@ -60,7 +60,7 @@ export function prepareCassandraSubject(
     educationLevel: subject.educationlevel,
     id: subject.id,
     sex: subject.sex,
-    visionDefect: subject.visiondefect
+    visionDefect: subject.visiondefect,
   };
 }
 

@@ -15,6 +15,7 @@ export interface SessionData {
   deviceError: string;
   deviceProducer: string;
   deviceFrequency: string;
+  subjectName: string;
 };
 
 export interface Calibration {
@@ -46,10 +47,12 @@ export interface Experiment {
   sessionData: SessionData[];
   calibrationData: Array<{
     sessionId: string;
+    subjectName: string;
     measurements: Calibration[];
   }>;
   measurementsData: Array<{
     sessionId: string;
+    subjectName: string;
     measurements: Measurement[];
   }>;
   stymulus: Stymulus[];

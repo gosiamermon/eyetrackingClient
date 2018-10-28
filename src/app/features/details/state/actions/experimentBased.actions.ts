@@ -5,6 +5,7 @@ import {
   ApiResponseSession,
   ApiResponseCassandraExperiment,
 } from '../../../../shared/api.shared.model';
+import { ApiResponseMongoExperiment } from '../../../../shared/api.experimentBased.model';
 import {
   cassandraExperimentBasedUrl,
   mongoExperimentBasedUrl
@@ -56,9 +57,31 @@ export const getExperimentFromMongoExperimentBased = (
   id: string | number,
 ) => {
   return async (dispatch: any, getState: () => Store) => {
-    const experiment: ApiResponseExperiment = await getExperiment(id, mongoExperimentBasedUrl);
+    const experiment: ApiResponseMongoExperiment = await getExperiment(id, mongoExperimentBasedUrl);
+    let sessions: ApiResponseSession[] = [];
+    experiment.subjects.forEach(subject => {
+      const subjectSessions = subject.sessions.map(session => {
+        session.subject = {
+          age: subject.age,
+          educationLevel: subject.educationLevel,
+          name: subject.name,
+          sex: subject.sex,
+          visionDefect: subject.visionDefect
+        }
+        return session;
+      });
+      sessions = [...sessions, ...subjectSessions]
+    });
+    const preparedExperiment: ApiResponseExperiment = {
+      endDate: experiment.endDate,
+      id: experiment.id,
+      name: experiment.name,
+      sessions,
+      startDate: experiment.startDate,
+      stymulus: experiment.stymulus,
+    }
     dispatch({
-      payload: experiment,
+      payload: preparedExperiment,
       type: GET_EXPERIMENT_SUCCESS,
     });
   }

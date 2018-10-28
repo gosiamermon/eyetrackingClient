@@ -1,4 +1,4 @@
-import { ApiStymulus, ApiSubject } from './api.shared.model';
+import { ApiStymulus, ApiSubject, ApiResponseSession, ApiResponseStymulus } from './api.shared.model';
 
 export interface ApiMeasurement {
   timestamp: number;
@@ -14,7 +14,7 @@ export interface ApiSession {
   deviceError: number;
   deviceProducer: string;
   deviceFrequency: number;
-  subject: ApiSubject;
+  subject?: ApiSubject;
   measurements: ApiMeasurement[],
   calibration: ApiMeasurement[],
 }
@@ -25,4 +25,40 @@ export interface ApiExperiment {
   endDate: string;
   stymulus: ApiStymulus[];
   sessions: ApiSession[];
+  subjectsNames: string[];
+}
+
+export interface ApiResponseMongoSubject {
+  age: number;
+  sex: string;
+  educationLevel: string;
+  visionDefect: number;
+  name?: string;
+  sessions: ApiResponseSession[];
+}
+
+export interface ApiMongoSubject {
+  age: number;
+  sex: string;
+  educationLevel: string;
+  visionDefect: number;
+  name?: string;
+  sessions: ApiSession[];
+}
+
+export interface ApiResponseMongoExperiment {
+  id: string | number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  stymulus: ApiResponseStymulus[];
+  subjects: ApiResponseMongoSubject[];
+}
+
+export interface ApiMongoExperiment {
+  name: string;
+  startDate: string;
+  endDate: string;
+  stymulus: ApiStymulus[];
+  subjects: ApiMongoSubject[];
 }

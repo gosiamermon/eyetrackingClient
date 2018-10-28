@@ -30,8 +30,8 @@ export const prepareMeasurements = (
 export const prepareStymulusForCalibration = (
   experiment: Experiment,
   session: SessionData,
-  experimentId: number,
-  sessionId: number,
+  experimentId?: number,
+  sessionId?: number,
 ): DataPerStymulus[] | undefined => {
   const filteredData = experiment.calibrationData.find(data => {
     return data.sessionId === session.id;
@@ -55,7 +55,9 @@ export const prepareStymulusForCalibration = (
 
       tempStymulus.startTime = calculateTime(firstCPSTimestamp, measurement.timestamp);
       tempStymulus.stymulusType = measurement.stymulusType;
-      tempStymulus.experimentId = experimentId;
+      if (experimentId) {
+        tempStymulus.experimentId = experimentId;
+      }
       tempStymulus.x = Number(measurement.x);
       tempStymulus.y = Number(measurement.y);
 
@@ -75,7 +77,7 @@ export const prepareStymulusForCalibration = (
 
       tempMeasurements.push({
         isCalibration: 1,
-        sessionId,
+        sessionId: sessionId ? sessionId : null,
         timestamp: Number(measurement.timestamp),
         x: Number(measurement.x),
         y: Number(measurement.y),
@@ -88,12 +90,12 @@ export const prepareStymulusForCalibration = (
 export const prepareStymulusForMeasurements = (
   experiment: Experiment,
   session: SessionData,
-  experimentId: number,
-  sessionId: number,
   images: Array<{
     fileName: string,
     link: string,
   }>,
+  experimentId?: number,
+  sessionId?: number,
 ): DataPerStymulus[] | undefined => {
   const sessionData = experiment.measurementsData.find(data => {
     return data.sessionId === session.id;
@@ -131,12 +133,14 @@ export const prepareStymulusForMeasurements = (
 
       tempStymulus.startTime = calculateTime(firstCPSTimestamp, measurement.timestamp);
       tempStymulus.stymulusType = measurement.stymulusType;
-      tempStymulus.experimentId = experimentId;
+      if (experimentId) {
+        tempStymulus.experimentId = experimentId;
+      }
       tempStymulus.link = tempImage ? tempImage.link : undefined;
     }
     tempMeasurements.push({
       isCalibration: 0,
-      sessionId,
+      sessionId: sessionId ? sessionId : null,
       timestamp: Number(measurement.timestamp),
       x: Number(measurement.x),
       y: Number(measurement.y),
